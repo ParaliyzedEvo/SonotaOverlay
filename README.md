@@ -1,7 +1,7 @@
 Settings for replays (ingame):
 - Go to skin file make sure empty the keyoverlay ingame like this:
 
-![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/75be2f24-e41d-4393-8535-8e2a5fea4c64)
+![image](https://github.com/user-attachments/assets/5b41b851-e88b-408e-9c2c-4f898c84dcef)
 
 - ingame settings:
 
