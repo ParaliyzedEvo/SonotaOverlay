@@ -403,7 +403,7 @@
           }
         }
         digit = this.renderDigit();
-        digit.querySelector('.odometer-value').innerHTML = value;
+        digit.querySelector('.odometer-value').textContent = value;
         this.digits.push(digit);
         return this.insertDigit(digit);
       };
