@@ -380,7 +380,7 @@ socket.commands((data) => {
 
       if (message['Recorder'] != null) {
           document.getElementById("recorderName").innerHTML = `${message['Recorder']}`;
-          document.getElementById("resultRecorder").innerHTML = `` + `${message['Recorder']}`;
+          document.getElementById("resultRecorder").innerHTML = `Recorder: ` + `${message['Recorder']}`;
       }
 
       if (cache['ColorSet'] !== message['ColorSet']) {
@@ -755,9 +755,9 @@ socket.commands((data) => {
             }
         }
         if (cache['resultScreen.accuracy'] !== resultsScreen.accuracy) {
-			cache['resultScreen.accuracy'] = resultsScreen.accuracy;
-			PlayerAcc.innerHTML = parseFloat(cache['resultScreen.accuracy']).toFixed(2) + '%';
-		}
+            cache['resultScreen.accuracy'] = resultsScreen.accuracy;
+            PlayerAcc.innerHTML = cache['resultScreen.accuracy'] + '%';
+        }
         if (cache['resultsScreen.maxCombo'] !== resultsScreen.maxCombo) {
             cache['resultsScreen.maxCombo'] = resultsScreen.maxCombo;
             PlayerMaxCombo.innerHTML = cache['resultsScreen.maxCombo'] + ` / ` + cache['beatmap.stats.maxCombo'] + `x`;
@@ -1412,7 +1412,6 @@ socket.commands((data) => {
             PlayerAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
             lbcpAvatar.style.backgroundImage = `linear-gradient(310deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0) 100%), url('https://a.ppy.sh/${userData.id}')`;
         }
-    }
 
     if (userData.error === null || LocalNameData === cache['LocalNameData'] || LocalNameData === `Alayna`) {
         playerBest = {
@@ -1420,7 +1419,7 @@ socket.commands((data) => {
                 "beatmap_id": `${cache['mapid0'] || ""}`,
                 "pp": `${cache['ppResult0'] || ""}`,
                 "mods_id": `${cache['modsid0'] || ""}`,
-                "rank": `${cache['rankResult0'] || ""}`,
+                "rank": `${cache['rankResult0'] | ""}`,
                 "ended_at": `${cache['date0'] || ""}`,
             },
             "1": {
@@ -1458,7 +1457,7 @@ socket.commands((data) => {
                 "rank": `${cache['rankResult5'] || ""}`,
                 "ended_at": `${cache['date5'] || ""}`,
             }
-        }
+    }
         for (let i = 0; i < 6; i++) {
             if (playerBest[i]["pp"] === "" ||
                 playerBest[i]["beatmap_id"] === "" ||
@@ -1474,13 +1473,11 @@ socket.commands((data) => {
             }
             else {
                 let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
-                if (mapData && mapData.beatmapset_id) {
-                    document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)),url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
-                    document.getElementById(`TopDate${i + 1}`).innerHTML = jQuery.timeago(playerBest[i]["ended_at"]);
-                    document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
-                    document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
-                    document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
-                }
+                document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)),url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
+                document.getElementById(`TopDate${i + 1}`).innerHTML = jQuery.timeago(playerBest[i]["ended_at"]);
+                document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
+                document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
+                document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
             }
 
             let ModsRCount = playerBest[i]['mods_id'].length;
@@ -1496,46 +1493,86 @@ socket.commands((data) => {
         }
     }
     else {
-        playerBest = await getUserTop(userData.id);
-        
-        // Check if playerBest is valid
-        if (!playerBest || playerBest.length === 0) {
-            console.warn('No top scores found for user');
-            return;
-        }
-        
-        for (let i = 0; i < Math.min(6, playerBest.length); i++) {
-            if (!playerBest[i] || !playerBest[i]["beatmap_id"]) {
-                console.warn(`Skipping score ${i}: missing beatmap_id`);
-                continue;
-            }
-            
+        playerBest = await getUserTop(userData.id)
+        for (let i = 0; i < 6; i++) {
             let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
-            if (mapData && mapData.beatmapset_id) {
-                document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)),url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
-                document.getElementById(`TopDate${i + 1}`).innerHTML = jQuery.timeago(playerBest[i]["ended_at"]);
-                document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
-                document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
-                document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
+            document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)),url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
+            document.getElementById(`TopDate${i + 1}`).innerHTML = jQuery.timeago(playerBest[i]["ended_at"]);
+            document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
+            document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
+            document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
 
-                if (playerBest[i]["legacy_score_id"] === cache['resultsScreen.scoreId']) {
-                    document.getElementById(`Top${i + 1}`).style.outlineColor = `hsl(${ColorResultLight})`;
-                    console.log(playerBest[i]["legacy_score_id"], cache['resultsScreen.scoreId'])
-                }
-                else {
-                    document.getElementById(`Top${i + 1}`).style.outlineColor = `rgba(0, 0, 0, 0)`;
-                }
+        if (playerBest[i]["legacy_score_id"] === cache['resultsScreen.scoreId']) {
+            document.getElementById(`Top${i + 1}`).style.outlineColor = `hsl(${ColorResultLight})`;
+            console.log(playerBest[i]["legacy_score_id"], cache['resultsScreen.scoreId'])
+        }
+        else {
+            document.getElementById(`Top${i + 1}`).style.outlineColor = `rgba(0, 0, 0, 0)`;
+        }
 
-                // Handle mods - they're now already in string format from getUserTop
-                let ModsNum = playerBest[i]['mods_id'] || 'NM';
-                
-                // Clean up mod combinations
-                ModsNum = ModsNum.replace('DTNC', 'NC').replace('HDHRDT', 'HDDTHR').replace('HDDRNC', 'HDNCHR');
-        
-                document.getElementById(`TopMods${i + 1}`).innerHTML = " ";
-                
-                let ModsRCount = ModsNum.length;
-                
+            let ModsResult = (parseInt(playerBest[i]['mods_id']) >>> 0).toString(2).padStart(15, "0");
+            let tempModsLiteral = "";
+            
+                if (ModsResult !== "000000000000000")
+                    for (var j = 14; j >= 0; j--) {
+                        if (ModsResult[j] === "1") {
+                            switch (j) {
+                                case 0:
+                                    tempModsLiteral += "PF";
+                                    break;
+                                case 1:
+                                    tempModsLiteral += "AP";
+                                    break;
+                                case 2:
+                                    tempModsLiteral += "SO";
+                                    break;
+                                case 3:
+                                    tempModsLiteral += "AT";
+                                    break;
+                                case 4:
+                                    tempModsLiteral += "FL";
+                                    break;
+                                case 5:
+                                    tempModsLiteral += "NC";
+                                    break;
+                                case 6:
+                                    tempModsLiteral += "HT";
+                                    break;
+                                case 7:
+                                    tempModsLiteral += "RX";
+                                    break;
+                                case 8:
+                                    tempModsLiteral += "DT";
+                                    break;
+                                case 9:
+                                    tempModsLiteral += "SD";
+                                    break;
+                                case 10:
+                                    tempModsLiteral += "HR";
+                                    break;
+                                case 11:
+                                    tempModsLiteral += "HD";
+                                    break;
+                                case 12:
+                                    tempModsLiteral += "TD";
+                                    break;
+                                case 13:
+                                    tempModsLiteral += "EZ";
+                                    break;
+                                case 14:
+                                    tempModsLiteral += "NF";
+                                    break;
+                            }
+                        }
+                    }
+            else tempModsLiteral = "NM";
+    
+            let ModsNum = tempModsLiteral.replace('DTNC', 'NC').replace('HDHRDT', 'HDDTHR').replace('HDDRNC', 'HDNCHR');
+    
+            document.getElementById(`TopMods${i + 1}`).innerHTML = " ";
+            
+            let ModsRCount = ModsNum.length;
+            
                 for (let k = 0; k < ModsRCount; k++) {
                     let modsR = document.createElement("div");
                     modsR.id = ModsNum.substr(k, 2) + i;
@@ -1544,8 +1581,6 @@ socket.commands((data) => {
                     document.getElementById(`TopMods${i + 1}`).appendChild(modsR);
                     k++;
                 }
-            } else {
-                console.warn(`Could not fetch map data for beatmap ID: ${playerBest[i]["beatmap_id"]}`);
             }
         }
     }
@@ -1555,12 +1590,14 @@ async function setupMapScores(beatmapID) {
     if (leaderboardFetch === false) {
         leaderboardFetch = true;
         let data;
+
         if (cache['LBOptions'] === "Selected Mods") {
-            data = await getModsScores(beatmapID, cache['resultsScreen.mods.name']);
+            data = await getModsScores(beatmapID);
         }
         else {
             data = await getMapScores(beatmapID);
         }
+
         if (data) {
             tempSlotLength = data.length;
             playerPosition = data.length + 1;
@@ -1568,46 +1605,56 @@ async function setupMapScores(beatmapID) {
             tempSlotLength = 0;
             playerPosition = 1;
         }
+
         for (let i = tempSlotLength; i > 0; i--) {
             tempMapScores[i - 1] = data[i - 1].score;
+
             let playerContainer = document.createElement("div");
             playerContainer.id = `playerslot${i}`;
             playerContainer.setAttribute("class", "lbBox");
             playerContainer.style.top = `${(i - 1) * 65}px`;
+
             let playerNumber = `
                         <div id="lb_Number_slot${i}" class="lb_Number">
                             <div id="lb_Positions_slot${i}" class="positions N${i}">${i}</div>
                         </div>
             `;
+
             let playerAvatar = `
-                        <div id="lb_Avatar_slot${i}" class="lb_Avatar" style="background-image: linear-gradient(310deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0) 100%), url('https://a.ppy.sh/${data[i - 1].user_id}')">
+                        <div id="lb_Avatar_slot${i}" class="lb_Avatar" style="background-image: linear-gradient(310deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0) 100%), url('https://a.ppy.sh/${data[i - 1].id}')">
                             <div id="lb_Ranking_slot${i}" class="${data[i - 1].rank} lb_Rank">${data[i - 1].rank.replace("H", "")}</div>
                         </div> 
             `;
+
             let playerStats = `
                         <div id="lb_Stats_slot${i}" class="lb_Stats">
                             <div id="lb_StatsLeft_slot${i}" class="lb_StatsLeft">
-                                <div id="lb_Name_slot${i}" class="lb_Name">${data[i - 1].username}</div>
+                                <div id="lb_Name_slot${i}" class="lb_Name">${data[i - 1].name}</div>
                                 <div id="lb_Score_slot${i}">${formatNumber(data[i - 1].score)}</div>
                             </div>
-                            <div id="lb_Combo_slot${i}" class="lb_Combo">${spaceit(data[i - 1].max_combo)}x</div>
+                            <div id="lb_Combo_slot${i}" class="lb_Combo">${spaceit(data[i - 1].combo)}x</div>
                             <div id="lb_StatsRight_slot${i}" class="lb_StatsRight">
                                 <div id="lb_PP_slot${i}" class="lb_PP">${Math.round(data[i - 1].pp)}pp</div>
                                 <div id="lb_Acc_slot${i}">${data[i - 1].acc.toFixed(2)}%</div>
                             </div>
                         </div>
             `;
+
             let playerMods = `
                         <div id="lb_Mods_slot${i}" class="lb_Mods"></div>
             `;
+
             playerContainer.innerHTML = `
                 ${playerNumber}
                 ${playerAvatar}
                 ${playerStats}
                 ${playerMods}
             `;
+
             document.getElementById("lbopCont").appendChild(playerContainer);
+
             let minimodsCount = data[i - 1].mods.length;
+
             for (let k = 0; k < minimodsCount; k++) {
                 let mods = document.createElement("div");
                 mods.id = data[i - 1].mods.substr(k, 2) + i;
@@ -1616,9 +1663,23 @@ async function setupMapScores(beatmapID) {
                 document.getElementById(`lb_Mods_slot${i}`).appendChild(mods);
                 k++;
             }
-            if (data[i - 1].username === cache['resultsScreen.name']) {
+
+            if (data[i - 1].name === cache['resultsScreen.name']) {
                 document.getElementById(`lb_Name_slot${i}`).setAttribute("class", "lb_Name bluelight")
             }
         }
+    }
+}
+
+async function getModsScores(beatmapID) {
+    try {
+        const data = (
+            await axios.get(`/${beatmapID}/mods/${cache['resultsScreen.mods.name']}`, {
+                baseURL: "https://phubahosi.vercel.app/api/beatmap",
+            })
+        )["data"];
+        return data.length !== 0 ? data : null;
+    } catch (error) {
+        console.error(error);
     }
 }
