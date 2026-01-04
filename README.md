@@ -1,3 +1,11 @@
+## SonotaOverlay
+[![CodeFactor](https://www.codefactor.io/repository/github/paraliyzedevo/sonotaoverlay/badge)](https://www.codefactor.io/repository/github/paraliyzedevo/sonotaoverlay)
+[![Website](https://img.shields.io/badge/-Website-6a0dad?style=flat&logo=osu&logoColor=FFFFFF&labelColor=ff1493&color=6a0dad)](https://paraliyzed.net/)
+[![Donate](https://img.shields.io/badge/-Donate-FFDE21?style=flat&logo=paypal&logoColor=%23FFFFFF&labelColor=%2300c244&color=%2300c244)](https://paypal.me/Paraliyzedevo)
+
+Basically this repo is a fork (and maintained version) of the original [SonotaOverlay](https://web.archive.org/web/20250325212754/https://github.com/HosizoraN/SonataOverlay) made by [HosizoraN](https://web.archive.org/web/20250325212754/https://github.com/HosizoraN) (using archive.org links due to them deleting the accounts). Only reason I have this is me having this overlay for a few years and using it (via tosu) for videos and streams and problems arose with it and I fixed them. This code has my patches and extras included with this, but if you want to revert them, you can go look in the [source code](https://github.com/ParaliyzedEvo/SonotaOverlay/tree/source) and edit the overlay yourself.
+
+## Instructions
 Settings for replays (ingame):
 - Go to skin file make sure empty the keyoverlay ingame like this:
 
@@ -11,3 +19,12 @@ Settings for replays (ingame):
 
 No new preview for now :v
 
+## Star History
+
+<a href="https://www.star-history.com/#ParaliyzedEvo/SonotaOverlay&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ParaliyzedEvo/SonotaOverlay&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ParaliyzedEvo/SonotaOverlay&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ParaliyzedEvo/SonotaOverlay&type=date&legend=top-left" />
+ </picture>
+</a>
