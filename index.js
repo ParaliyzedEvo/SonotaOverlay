@@ -822,7 +822,8 @@ socket.commands((data) => {
           }
 
         const cachedim = settings.background.dim / 100;
-        const Folder = cache['folders.beatmap'].replace(/#/g, "%23").replace(/%/g, "%25").replace(/\\/g, "/").replace(/'/g, "%27").replace(/ /g, "%20");
+        const normalizedFolder = cache['folders.beatmap'].replace(/\\/g, "/");
+        const Folder = normalizedFolder.split("/").map(encodeURIComponent).join("/");
         const Img = cache['files.background'];
 
         mapBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, ${cachedim}), rgba(0, 0, 0, ${cachedim})), url("http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}")`;
