@@ -1,0 +1,56 @@
+[2026-01-05T05:51:55.194Z] ============================================================
+[2026-01-05T05:51:55.197Z] osu! API Proxy Server
+[2026-01-05T05:51:55.197Z] ============================================================
+[2026-01-05T05:51:55.197Z] Server running on: http://127.0.0.1:24051
+[2026-01-05T05:51:55.198Z] Health check: http://127.0.0.1:24051/health
+[2026-01-05T05:51:55.198Z] Log file: C:\Users\Paraliyzed_evo\Documents\.exe\tosu\static\SonataOverlay\proxy.log
+[2026-01-05T05:51:55.198Z] 
+[2026-01-05T05:51:55.199Z] This proxy will automatically shut down when tosu closes
+[2026-01-05T05:51:55.199Z] Press Ctrl+C to stop the server manually
+[2026-01-05T05:51:55.199Z] ============================================================
+[2026-01-05T05:51:55.205Z] Starting tosu monitoring...
+[2026-01-05T05:51:55.208Z] tosu detected - proxy will auto-shutdown when tosu closes
+[2026-01-05T05:52:15.804Z] OAuth token obtained successfully
+[2026-01-05T06:11:10.663Z] ============================================================
+[2026-01-05T06:11:10.665Z] osu! API Proxy Server
+[2026-01-05T06:11:10.665Z] ============================================================
+[2026-01-05T06:11:10.666Z] Server running on: http://127.0.0.1:24051
+[2026-01-05T06:11:10.666Z] Health check: http://127.0.0.1:24051/health
+[2026-01-05T06:11:10.666Z] Log file: C:\Users\Paraliyzed_evo\Documents\.exe\tosu\static\SonataOverlay\proxy.log
+[2026-01-05T06:11:10.667Z] 
+[2026-01-05T06:11:10.667Z] This proxy will automatically shut down when tosu closes
+[2026-01-05T06:11:10.667Z] Press Ctrl+C to stop the server manually
+[2026-01-05T06:11:10.668Z] ============================================================
+[2026-01-05T06:11:10.668Z] Starting tosu monitoring...
+[2026-01-05T06:11:10.671Z] tosu detected - proxy will auto-shutdown when tosu closes
+[2026-01-05T06:11:23.411Z] OAuth token obtained successfully
+[2026-01-05T06:12:31.760Z] ============================================================
+[2026-01-05T06:12:31.763Z] osu! API Proxy Server
+[2026-01-05T06:12:31.763Z] ============================================================
+[2026-01-05T06:12:31.763Z] Server running on: http://127.0.0.1:24051
+[2026-01-05T06:12:31.764Z] Health check: http://127.0.0.1:24051/health
+[2026-01-05T06:12:31.764Z] Log file: C:\Users\Paraliyzed_evo\Documents\.exe\tosu\static\SonataOverlay\proxy.log
+[2026-01-05T06:12:31.764Z] 
+[2026-01-05T06:12:31.765Z] This proxy will automatically shut down when tosu closes
+[2026-01-05T06:12:31.765Z] Press Ctrl+C to stop the server manually
+[2026-01-05T06:12:31.765Z] ============================================================
+[2026-01-05T06:12:31.766Z] Starting tosu monitoring...
+[2026-01-05T06:12:31.769Z] tosu detected - proxy will auto-shutdown when tosu closes
+[2026-01-05T06:12:41.783Z] tosu has stopped - shutting down proxy...
+[2026-01-05T06:12:41.783Z] 
+TOSU_CLOSED received - shutting down gracefully...
+[2026-01-05T06:12:45.983Z] Server closed successfully
+[2026-01-05T06:12:53.793Z] ============================================================
+[2026-01-05T06:12:53.795Z] osu! API Proxy Server
+[2026-01-05T06:12:53.795Z] ============================================================
+[2026-01-05T06:12:53.796Z] Server running on: http://127.0.0.1:24051
+[2026-01-05T06:12:53.796Z] Health check: http://127.0.0.1:24051/health
+[2026-01-05T06:12:53.796Z] Log file: C:\Users\Paraliyzed_evo\Documents\.exe\tosu\static\SonataOverlay\proxy.log
+[2026-01-05T06:12:53.796Z] 
+[2026-01-05T06:12:53.797Z] This proxy will automatically shut down when tosu closes
+[2026-01-05T06:12:53.797Z] Press Ctrl+C to stop the server manually
+[2026-01-05T06:12:53.798Z] ============================================================
+[2026-01-05T06:12:53.798Z] Starting tosu monitoring...
+[2026-01-05T06:12:53.801Z] tosu not detected yet - waiting for tosu to start...
+[2026-01-05T06:12:58.681Z] OAuth token obtained successfully
+[2026-01-05T06:12:58.814Z] tosu detected - proxy will auto-shutdown when tosu closes
