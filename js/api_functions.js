@@ -50,7 +50,7 @@ function showProxyWarning() {
   CrashReportDebug.classList.remove('crashpop');
   CrashReason.innerHTML = 
     `The local proxy server is not running. API features (user top scores, leaderboards) will not work.<br><br>
-    To enable these features, run: <code style="background: rgba(255,255,255,0.1); padding: 5px; border-radius: 3px;">proxy.bat or proxy.sh</code><br><br>
+    To enable these features, run: <code style="background: rgba(255,255,255,0.1); padding: 5px; border-radius: 3px;">proxy.bat or proxy.sh from the overlay folder</code><br><br>
     Then add your osu! OAuth Client ID and Secret in the overlay settings if you haven't already.`;
 }
 
