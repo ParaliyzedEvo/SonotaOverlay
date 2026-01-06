@@ -488,7 +488,7 @@ socket.commands(async (data) => {
             }
           }
         
-        if (userProfile && cache['profileColor'] !== userProfile.backgroundColour) {
+        if (cache['profileColor'] !== userProfile.backgroundColour) {
             cache['profileColor'] = userProfile.backgroundColour;
             setprofileColor(cache['profileColor']);
         }
