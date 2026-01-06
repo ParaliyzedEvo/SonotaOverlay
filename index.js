@@ -463,7 +463,20 @@ socket.commands(async (data) => {
   });
   
   socket.api_v2(({ state, settings, performance, resultsScreen, play, beatmap, folders, files, directPath, client, userProfile}) => {
-    try {      
+    try {
+        const requiredElements = [
+            'gptop', 'gpbottom', 'URCont', 'avgHitError', 'leaderboard',
+            'lbcpPosition', 'lbopCont', 'currentplayerCont', 'lbcpLine',
+            'strainGraph', 'progress', 'progress100', 'progress50', 'progress0', 'progressSB',
+            'recorderContainer', 'combo_text2', 'combo_text', 'combo_max', 'combo_x',
+            'combo_box', 'pp_box', 'pp_txt', 'hpBar'
+        ];
+        
+        const allExist = requiredElements.every(id => document.getElementById(id) !== null);
+        if (!allExist) {
+            console.log('Waiting for DOM elements to load...');
+            return;
+        }     
 
         if (cache['client'] !== client) {
             cache['client'] = client;
@@ -474,7 +487,11 @@ socket.commands(async (data) => {
               mapBG.style.display = `block`;
             }
           }
-
+        
+        if (userProfile && cache['profileColor'] !== userProfile.backgroundColour) {
+            cache['profileColor'] = userProfile.backgroundColour;
+            setprofileColor(cache['profileColor']);
+        }
         if (cache['showInterface'] !== settings.interfaceVisible) {
             cache['showInterface'] = settings.interfaceVisible;
         }
@@ -842,30 +859,33 @@ socket.commands(async (data) => {
         pp_wrapper.style.transform = `translateX(-${cache['beatmap.stats.od.converted'] * 12.5}px)`;
         l50.style.width = `${600 - (24 * cache['beatmap.stats.od.converted'])}px`;
 
-        if (cache['data.menu.state'] !== 2) {
-            if (cache['data.menu.state'] !== 7) deRankingPanel()
-  
-            gptop.style.opacity = 0;
+        if (cache['data.menu.state'] === 2 || cache['data.menu.state'] === 7) {
+            if (!gptop || !gpbottom || !URCont || !leaderboard) return;
+            if (cache['data.menu.state'] !== 2) {
+                if (cache['data.menu.state'] !== 7) deRankingPanel()
     
-            URCont.style.opacity = 0;
-            avgHitError.style.transform = "translateX(0)";
-    
-            gpbottom.style.opacity = 0;
-        } else {
-            deRankingPanel();
+                gptop.style.opacity = 0;
+        
+                URCont.style.opacity = 0;
+                avgHitError.style.transform = "translateX(0)";
+        
+                gpbottom.style.opacity = 0;
+            } else {
+                deRankingPanel();
 
-            if (cache['beatmap_rankedStatus'] === 4 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 7 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 6 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 5 && cache['LBEnabled'] === true ) {
-                lbcpPosition.innerHTML = `${playerPosition}`;
-                leaderboard.style.opacity = 1;
+                if (cache['beatmap_rankedStatus'] === 4 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 7 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 6 && cache['LBEnabled'] === true || cache['beatmap_rankedStatus'] === 5 && cache['LBEnabled'] === true ) {
+                    lbcpPosition.innerHTML = `${playerPosition}`;
+                    leaderboard.style.opacity = 1;
+                }
+                else {
+                    lbcpPosition.innerHTML = `0`;
+                    leaderboard.style.opacity = 0;
+                }
+                
+                gptop.style.opacity = 1;
+                gpbottom.style.opacity = 1;
+                URCont.style.opacity = 1;
             }
-            else {
-                lbcpPosition.innerHTML = `0`;
-                leaderboard.style.opacity = 0;
-            }
-            
-            gptop.style.opacity = 1;
-            gpbottom.style.opacity = 1;
-            URCont.style.opacity = 1;
         }
 
         if (cache['data.menu.state'] === 7) {
@@ -896,6 +916,7 @@ socket.commands(async (data) => {
           }
         
         if (cache['data.menu.state'] === 2) {
+            if (!gptop) return;
     
             if (cache['showInterface'] === true && cache['data.menu.state'] === 2) {
                 gptop.style.opacity = 0;
@@ -982,11 +1003,6 @@ socket.commands(async (data) => {
         } else {
             recorderContainer.style.transform = 'scale(80%)';
             recorderContainer.style.opacity = '0';
-        }
-        
-        if (cache['profileColor'] !== userProfile.backgroundColour) {
-            cache['profileColor'] = userProfile.backgroundColour;
-            setprofileColor(cache['profileColor']);
         }
 
         let isBreak = cache['play.combo.current'] < cache['play.combo.max'];
@@ -1349,6 +1365,10 @@ socket.commands(async (data) => {
       {
           field: 'directPath',
           keys: ['beatmapBackground']
+      },
+      {
+          field: 'userProfile',
+          keys: ['backgroundColour']
       }
   ]);
   socket.api_v2_precise((data) => {

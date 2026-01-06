@@ -78,11 +78,17 @@ export async function getUserDataSet(username) {
   }
 
   try {
-    const response = await fetch(`${API_BASE}/get_user?k=${apiKey}&u=${encodeURIComponent(username)}&type=username`);
-    if (!response.ok) return null;
+    const response = await fetch(`${API_BASE}/get_user?k=${apiKey}&u=${encodeURIComponent(username)}&type=string`);
+    if (!response.ok) {
+      console.error('API response not OK:', response.status);
+      return null;
+    }
     
     const data = await response.json();
-    if (!data || data.length === 0) return null;
+    if (!data || data.length === 0) {
+      console.warn('No user data found for:', username);
+      return null;
+    }
     
     const user = data[0];
     return {
@@ -306,7 +312,6 @@ function convertModsNumberToString(modsNumber) {
     134217728: '2K',
     268435456: 'V2'
   };
-
 
   let modsString = '';
   for (const [value, mod] of Object.entries(modMap)) {
