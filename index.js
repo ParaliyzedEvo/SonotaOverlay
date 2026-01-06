@@ -198,7 +198,7 @@ window.onload = () => {
   };
 
 socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
-socket.commands((data) => {
+socket.commands(async (data) => {
     try {
       const { command, message } = data;
       // get updates for "getSettings" command
@@ -215,7 +215,7 @@ socket.commands((data) => {
       }
 
       if (cache['Client'] && cache['Secret']) {
-        setOsuCredentials(cache['Client'], cache['Secret']);
+        await setOsuCredentials(cache['Client'], cache['Secret']);
       }
 
       if (cache['LocalNameData'] !== message['LocalNameData']) {

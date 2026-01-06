@@ -1,6 +1,9 @@
+import * as osu from "osu-api-v2-js";
+
 let socket = null;
 let clientId = null;
 let clientSecret = null;
+let api = null;
 
 const CrashReportDebug = document.getElementById('CrashReportDebug');
 const CrashReason = document.getElementById('CrashReason');
@@ -11,7 +14,6 @@ export function initApiSocket(ws) {
 }
 
 function setupTosuConnectionHandlers() {
-  const originalOnOpen = socket.sockets?.['/websocket/v2']?.onopen;
   if (socket.sockets?.['/websocket/v2']) {
     const originalOnOpen = socket.sockets['/websocket/v2'].onopen;
     socket.sockets['/websocket/v2'].onopen = function(event) {
@@ -42,15 +44,24 @@ function hideTosuWarning() {
   }
 }
 
-export function setOsuCredentials(id, secret) {
-  clientId = id;
+export async function setOsuCredentials(id, secret) {
+  clientId = parseInt(id);
   clientSecret = secret;
   
   if (id && secret) {
-    console.log('osu! API credentials set');
-    hideCredentialsWarning();
+    console.log('osu! API credentials set, initializing API...');
+    try {
+      api = await osu.API.createAsync(clientId, clientSecret, undefined, { verbose: "none" });
+      console.log('osu! API initialized successfully');
+      hideCredentialsWarning();
+    } catch (error) {
+      console.error('Failed to initialize osu! API:', error);
+      showCredentialsWarning();
+      api = null;
+    }
   } else {
     console.log('osu! API credentials not set');
+    api = null;
     showCredentialsWarning();
   }
 }
@@ -68,19 +79,14 @@ function hideCredentialsWarning() {
   CrashReason.innerHTML = '';
 }
 
-async function makeRequest(endpoint) {
-  if (!clientId || !clientSecret) {
-    console.warn('osu! API credentials not configured');
+export async function getUserDataSet(username) {
+  if (!api) {
+    console.warn('osu! API not initialized');
     return null;
   }
-  
-  console.log('API request:', endpoint);
-  return null;
-}
 
-export async function getUserDataSet(username) {
   try {
-    const data = await makeRequest(`/users/${username}/osu`);
+    const data = await api.getUser(username, "osu");
     if (!data) return null;
     
     return {
@@ -89,9 +95,9 @@ export async function getUserDataSet(username) {
       country_code: data.country_code,
       profile_colour: data.profile_colour,
       statistics: {
-        global_rank: data.statistics.global_rank,
-        country_rank: data.statistics.country_rank,
-        pp: data.statistics.pp
+        global_rank: data.statistics?.global_rank || 0,
+        country_rank: data.statistics?.country_rank || 0,
+        pp: data.statistics?.pp || 0
       }
     };
   } catch (error) {
@@ -101,9 +107,14 @@ export async function getUserDataSet(username) {
 }
 
 export async function getUserTop(userId) {
+  if (!api) {
+    console.warn('osu! API not initialized');
+    return null;
+  }
+
   try {
-    const data = await makeRequest(`/users/${userId}/scores/best?mode=osu&limit=100`);
-    if (!data) return null;
+    const data = await api.getUserScores(userId, "best", "osu", { limit: 100 });
+    if (!data || data.length === 0) return null;
     
     return data.map(score => ({
       beatmap_id: score.beatmap.id,
@@ -120,10 +131,12 @@ export async function getUserTop(userId) {
 }
 
 export async function getMapDataSet(beatmapID) {
-  if (!beatmapID || beatmapID === 'undefined') return null;
+  if (!api || !beatmapID || beatmapID === 'undefined') {
+    return null;
+  }
   
   try {
-    const data = await makeRequest(`/beatmaps/${beatmapID}`);
+    const data = await api.getBeatmap(beatmapID);
     if (!data) return null;
     
     return {
@@ -139,13 +152,13 @@ export async function getMapDataSet(beatmapID) {
 }
 
 export async function getMapScores(beatmapID) {
-  if (!beatmapID || beatmapID === 'undefined' || beatmapID === 'null') {
+  if (!api || !beatmapID || beatmapID === 'undefined' || beatmapID === 'null') {
     return null;
   }
   
   try {
-    const data = await makeRequest(`/beatmaps/${beatmapID}/scores?mode=osu`);
-    if (!data || !data.scores) return null;
+    const data = await api.getBeatmapScores(beatmapID, "osu");
+    if (!data || !data.scores || data.scores.length === 0) return null;
 
     return data.scores.map(score => {
       const { count_300, count_100, count_50, count_miss } = score.statistics;
@@ -177,7 +190,7 @@ export async function getMapScores(beatmapID) {
 }
 
 export async function getModsScores(beatmapID, modsString) {
-  if (!beatmapID || beatmapID === 'undefined' || beatmapID === 'null') {
+  if (!api || !beatmapID || beatmapID === 'undefined' || beatmapID === 'null') {
     return null;
   }
   
@@ -209,6 +222,13 @@ export async function getModsScores(beatmapID, modsString) {
 }
 
 export async function postUserID(id) {
+  if (!api) {
+    return {
+      hsl1: [0.5277777777777778, 0],
+      hsl2: [0.5277777777777778, 0]
+    };
+  }
+
   try {
     const userData = await getUserDataSet(id);
     if (!userData || !userData.profile_colour) {

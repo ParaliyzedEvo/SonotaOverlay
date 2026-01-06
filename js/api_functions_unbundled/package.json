@@ -15,9 +15,12 @@
   "type": "module",
   "main": "api_functions_unbundled.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build"
   },
   "dependencies": {
     "osu-api-v2-js": "^2.1.5"
+  },
+  "devDependencies": {
+    "vite": "^7.3.0"
   }
 }
