@@ -5,6 +5,8 @@
 
 Basically this repo is a fork (and maintained version) of the original [SonotaOverlay](https://web.archive.org/web/20250325212754/https://github.com/HosizoraN/SonataOverlay) made by [HosizoraN](https://web.archive.org/web/20250325212754/https://github.com/HosizoraN) (using archive.org links due to them deleting the accounts). Only reason I have this is me having this overlay for a few years and using it (via [tosu](https://github.com/tosuapp/tosu)) for videos and streams and problems arose with it and I fixed them. This code has my patches and extras included with this, but if you want to revert them, you can go look in the [source code](https://github.com/ParaliyzedEvo/SonotaOverlay/tree/source) and edit the overlay yourself.
 
+Report issues or feature ideas [here](https://github.com/ParaliyzedEvo/SonataOverlay/issues)
+
 ## Instructions
 Settings for replays (ingame):
 - Go to skin file make sure empty the keyoverlay ingame like this:
@@ -22,7 +24,7 @@ No new preview for now :v
 ## Security
 - This project does not ship any osu! API credentials to anyone.
 - All API requests are made locally using user provided OAuth.
-- No public or shared proxy services are used, proxy is only ran locally.
+- No public or shared proxy services are used, osu-api-v2-js is used.
 
 ## Star History
 
