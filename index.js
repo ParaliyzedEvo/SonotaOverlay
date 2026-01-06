@@ -2,7 +2,7 @@ import WebSocketManager from './js/socket.js';
 import CanvasKeys from './js/canvas.js';
 import {createChartConfig, createChartConfig2, toChartData, FAST_SMOOTH_TYPE_MULTIPLE_WIDTH, FAST_SMOOTH_TYPE_NO_SMOOTHING, fastSmooth, max} from "./js/graph.js";
 import {hitJudgementsAdd, hitJudgementsClear, tapJudgement} from "./js/setups_functions.js";
-import {initApiSocket, getMapDataSet, getMapScores, getUserDataSet, getUserTop, postUserID, setOsuCredentials} from "./js/api_functions.js";
+import {initApiSocket, getMapDataSet, getMapScores, getUserDataSet, getUserTop, postUserID, setOsuCredentials, setprofileColor} from "./js/api_functions.js";
 
 window.socket = new WebSocketManager('127.0.0.1:24050');
 initApiSocket(window.socket);
@@ -206,12 +206,9 @@ socket.commands(async (data) => {
 
       console.log(command, message);
 
-      if (cache['Client'] !== message['Client']) {
-        cache['Client'] = message['Client'];
-      }
-
-      if (cache['Secret'] !== message['Secret']) {
-        cache['Secret'] = message['Secret'];
+      if (cache['apikey'] !== message['apikey']) {
+        cache['apikey'] = message['apikey'];
+        await setOsuCredentials(cache['apikey']);
       }
 
       if (cache['Client'] && cache['Secret']) {
@@ -465,7 +462,7 @@ socket.commands(async (data) => {
     }
   });
   
-  socket.api_v2(({ state, settings, performance, resultsScreen, play, beatmap, folders, files, directPath, client }) => {
+  socket.api_v2(({ state, settings, performance, resultsScreen, play, beatmap, folders, files, directPath, client, userProfile}) => {
     try {      
 
         if (cache['client'] !== client) {
@@ -987,6 +984,10 @@ socket.commands(async (data) => {
             recorderContainer.style.opacity = '0';
         }
         
+        if (cache['profileColor'] !== userProfile.backgroundColour) {
+            cache['profileColor'] = userProfile.backgroundColour;
+            setprofileColor(cache['profileColor']);
+        }
 
         let isBreak = cache['play.combo.current'] < cache['play.combo.max'];
 
