@@ -916,7 +916,6 @@ socket.commands(async (data) => {
           }
         
         if (cache['data.menu.state'] === 2) {
-            if (!gptop) return;
     
             if (cache['showInterface'] === true && cache['data.menu.state'] === 2) {
                 gptop.style.opacity = 0;
