@@ -1,86 +1,71 @@
 let socket = null;
 let clientId = null;
 let clientSecret = null;
-let proxyCheckInterval = null;
-let isProxyRunning = false;
-
-const PROXY_URL = 'http://127.0.0.1:24051/api';
 
 const CrashReportDebug = document.getElementById('CrashReportDebug');
 const CrashReason = document.getElementById('CrashReason');
 
 export function initApiSocket(ws) {
   socket = ws;
-  startProxyCheck();
+  setupTosuConnectionHandlers();
+}
+
+function setupTosuConnectionHandlers() {
+  const originalOnOpen = socket.sockets?.['/websocket/v2']?.onopen;
+  if (socket.sockets?.['/websocket/v2']) {
+    const originalOnOpen = socket.sockets['/websocket/v2'].onopen;
+    socket.sockets['/websocket/v2'].onopen = function(event) {
+      if (originalOnOpen) originalOnOpen.call(this, event);
+      hideTosuWarning();
+    };
+
+    const originalOnClose = socket.sockets['/websocket/v2'].onclose;
+    socket.sockets['/websocket/v2'].onclose = function(event) {
+      showTosuWarning();
+      if (originalOnClose) originalOnClose.call(this, event);
+    };
+  }
+}
+
+function showTosuWarning() {
+  CrashReportDebug.classList.remove('crashpop');
+  CrashReason.innerHTML = 
+    `The tosu server socket is currently closed (or the program has crashed). Please relaunch tosu!<br><br>
+    If this error still exists, please contact the overlay developer or tosu developer.`;
+}
+
+function hideTosuWarning() {
+  if (!clientId || !clientSecret) {
+    showCredentialsWarning();
+  } else {
+    CrashReportDebug.classList.add('crashpop');
+  }
 }
 
 export function setOsuCredentials(id, secret) {
   clientId = id;
   clientSecret = secret;
-  console.log('osu! API credentials set');
-  startProxyCheck();
-}
-
-async function checkProxyStatus() {
-  try {
-    const response = await fetch(`${PROXY_URL}/health`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(2000)
-    });
-    
-    if (response.ok) {
-      if (!isProxyRunning) {
-        console.log('[PROXY] Connected');
-        isProxyRunning = true;
-        hideProxyWarning();
-      }
-      return true;
-    }
-  } catch (error) {
-    if (isProxyRunning || isProxyRunning === null) {
-      console.log('[PROXY] Disconnected');
-      isProxyRunning = false;
-      showProxyWarning();
-    }
-    return false;
+  
+  if (id && secret) {
+    console.log('osu! API credentials set');
+    hideCredentialsWarning();
+  } else {
+    console.log('osu! API credentials not set');
+    showCredentialsWarning();
   }
 }
 
-function showProxyWarning() {
+function showCredentialsWarning() {
   CrashReportDebug.classList.remove('crashpop');
   CrashReason.innerHTML = 
-    `The local proxy server is not running. API features (user top scores, leaderboards) will not work.<br><br>
-    To enable these features, run: <code style="background: rgba(255,255,255,0.1); padding: 5px; border-radius: 3px;">proxy.bat or proxy.sh from the overlay folder</code><br><br>
-    Then add your osu! OAuth Client ID and Secret in the overlay settings if you haven't already.`;
+    `To enable API features (user top scores, leaderboards):<br><br>
+    Add your osu! OAuth Client ID and Secret in the overlay settings<br><br>
+    Get your OAuth credentials at: <a href="https://osu.ppy.sh/home/account/edit" target="_blank" style="color: #a1c9ff;">https://osu.ppy.sh/home/account/edit</a>`;
 }
 
-function hideProxyWarning() {
+function hideCredentialsWarning() {
   CrashReportDebug.classList.add('crashpop');
-}
-
-function startProxyCheck() {
-  checkProxyStatus();
-
-  if (!clientId || !clientSecret) {
-    console.log('[PROXY] Credentials not set, skipping interval polling');
-    return;
-  }
-
-  if (proxyCheckInterval) {
-    clearInterval(proxyCheckInterval);
-  }
-
-  proxyCheckInterval = setInterval(() => {
-    checkProxyStatus();
-  }, 5000);
-}
-
-export function stopProxyCheck() {
-  if (proxyCheckInterval) {
-    clearInterval(proxyCheckInterval);
-    proxyCheckInterval = null;
-  }
-  hideProxyWarning();
+  CrashReason.innerHTML = '';
 }
 
 async function makeRequest(endpoint) {
@@ -89,31 +74,8 @@ async function makeRequest(endpoint) {
     return null;
   }
   
-  if (!isProxyRunning) {
-    showProxyWarning();
-    return null;
-  }
-  
-  try {
-    const response = await fetch(`${PROXY_URL}?endpoint=${encodeURIComponent(endpoint)}`, {
-      method: 'GET',
-      headers: {
-        'X-Client-ID': clientId,
-        'X-Client-Secret': clientSecret
-      }
-    });
-
-    if (!response.ok) {
-      console.error(`API request failed: ${response.status}`);
-      return null;
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('API request error:', error);
-    checkProxyStatus();
-    return null;
-  }
+  console.log('API request:', endpoint);
+  return null;
 }
 
 export async function getUserDataSet(username) {
