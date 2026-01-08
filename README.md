@@ -24,7 +24,6 @@ No new preview for now :v
 ## Security
 - This project does not ship any osu! API credentials to anyone.
 - All API requests are made locally using user provided OAuth.
-- No public or shared proxy services are used, osu-api-v2-js is used.
 
 ## Star History
 
