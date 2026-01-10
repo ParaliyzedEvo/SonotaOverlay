@@ -386,7 +386,7 @@ socket.commands(async (data) => {
 
       if (message['Recorder'] != null) {
           document.getElementById("recorderName").innerHTML = `${message['Recorder']}`;
-          document.getElementById("resultRecorder").innerHTML = `Recorder: ` + `${message['Recorder']}`;
+          document.getElementById("resultRecorder").innerHTML = `` + `${message['Recorder']}`;
       }
 
       if (cache['ColorSet'] !== message['ColorSet']) {
@@ -831,7 +831,7 @@ socket.commands(async (data) => {
             cache['menu.bm.path.full'] = directPath.beatmapBackground;
         
             const background_path = directPath.beatmapBackground.replace(folders.songs, '');
-            
+        
             const background = document.getElementById('rankingPanelBG')
             const background2 = document.getElementById('RBG')
   
@@ -1780,10 +1780,16 @@ async function setupMapScores(beatmapID) {
         leaderboardFetch = true;
         let data;
         if (cache['LBOptions'] === "Selected Mods") {
-            data = await getModsScores(beatmapID, cache['resultsScreen.mods.name']);
+            data = await getModsScores(beatmapID, cache['resultsScreen.mods.name'], cache['mode']);
         }
         else {
-            data = await getMapScores(beatmapID);
+            const modeNumber = {
+                'osu': 0,
+                'taiko': 1,
+                'fruits': 2,
+                'mania': 3
+            }[cache['mode']] || 0;
+            data = await getMapScores(beatmapID, modeNumber);
         }
         if (data) {
             tempSlotLength = data.length;
